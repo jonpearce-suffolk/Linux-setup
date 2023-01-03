@@ -1,4 +1,7 @@
 # Linux-setup
+
+Copyright under GPL v3 of Multi-project.co.uk Ltd 2023 onwards
+
 BASH script to setup Linux with example config files
 
 default.cfg - config file name/value pairs that control which functions are run
@@ -20,7 +23,7 @@ At the end of each function it will alter the "installed.cfg" to say that functi
 
 Again at the moment, it will do this even if the function was unsuccessful.
 
-This means that 
+This means that
 1) you can have different config files against the same utility script to have slight different setup depending on circumstances,
 2) if you run the script again, it will not repeat all the functions that have run previously.
 
@@ -32,4 +35,4 @@ The example config and utility script contains a setup for Apache, PHP and MySql
 
 You can contribute different utility scripts and config files by contacting me by email.
 
-Multi-project.co.uk 
+Multi-project.co.uk
