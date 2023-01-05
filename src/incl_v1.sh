@@ -56,15 +56,14 @@ InstallMySqlOnly()
 InstallMySqlSecure()
 {
 	apt-get install mysql-server
+
+	# Make admin password same as unix admin password, add another question if different password required.
 	mysql -uroot <<-END1
-		ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY 'TempFront*';
+		ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY '$admin_pass';
 		END1
 
 	mysql_secure_installation
 
-	mysql -uroot -pTempFront* <<-END2
-		ALTER USER 'root'@'localhost' IDENTIFIED WITH auth_socket;
-		END2
 }
 
 InstallPHP()
