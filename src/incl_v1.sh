@@ -58,6 +58,7 @@ InstallMySqlSecure()
 	apt-get install mysql-server
 
 	# Make admin password same as unix admin password, add another question if different password required.
+	# dash removes whitespace in front of lines placed there to make it easier to read.
 	mysql -uroot <<-END1
 		ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY '$admin_pass';
 		END1
