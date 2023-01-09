@@ -7,6 +7,12 @@ AddAdminUser()
 
 }
 
+DisAllowRootSsh()
+{
+	# using i and suffix as we need a backup.
+	sed -i.BAK "s|PermitRootLogin yes|PermitRootLogin no|" /etc/ssh/sshd_config
+}
+
 NewHost()
 {
 	read -p "Enter new hostname or empty for keeping existing name :" new_host_name
