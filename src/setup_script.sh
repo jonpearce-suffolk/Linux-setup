@@ -4,46 +4,88 @@ default_config="default.cfg"
 installed_config="installed.cfg"
 install_log="install.log"
 admin_user="mp_admin"; export admin_user;
+SCRIPTPATH="$( cd -- "$(dirname "$0")" >/dev/null 2>&1 ; pwd -P )"
+
+# either parameter 1 is new config or ask.
+echo "$1"
+if [ $# -eq 0 ]
+	then
+		read -p "Enter new config name (or leave blank for default): " new_config
+	else
+		new_config=$1
+fi
+
+if [ ! -z "$new_config" ]
+	then
+		if [ -f "$new_config" ]
+			then
+				default_config=$new_config
+				rm $installed_config
+			else
+				echo "New config ${new_config} does not exist"
+				exit
+		fi
+fi
+
+echo "Script running from folder $SCRIPTPATH"
 
 hostnamectl
 echo "This is the current machine name."
-read -p "Press enter to continue" start
-read -p "Enter the domain: " domain_name; export domain_name;
-read -p "Admin password $admin_user" admin_pass; export admin_pass
+#read -p "Press enter to continue" start
+#read -p "Enter the domain: " domain_name; export domain_name;
+#read -p "Admin password $admin_user" admin_pass; export admin_pass
 
-DIR="${BASH_SOURCE%/*}"
-if [ ! -d "$DIR" ]
+if [ ! -d "$SCRIPTPATH" ]
 	then
-	DIR="$PWD"
+	SCRIPTPATH="$PWD"
 fi
-. "$DIR/incl_v1.sh"
-
+source "$SCRIPTPATH/incl_v1.sh"
+echo "loading library $SCRIPTPATH/incl_v1.sh"
 
 if [ ! -f "$installed_config" ]
 	then
-	cp "$default_config" "$installed_config"
-fi
+		echo "Install new config file"
+		cp "$default_config" "$installed_config"
+	else
+		echo "Using existing installed config"
+	fi
 
+echo "================" >>$install_log
 while IFS= read -r file_line
 	do
+		# Ignore blank lines in config
+		if [ -z "$install_log" ]
+			then
+				continue
+			fi
+		# Ignore and echo comments in config
+		if [ ${file_line:0:1} == "#" ]
+			then
+				echo ${file_line}
+				continue
+			fi
+
 		config_name=${file_line%=*}
 		config_value=${file_line#*=}
 
 		# process this option
-		echo "Processing config item $config_name : \"$config_value\"" >>$install_log
+		mess="Processing config item $config_name : \"$config_value\" $(date)"
+		echo $mess >>$install_log
 
 		if [ $config_value != "Y" ]; then
 			continue;
 		fi
 
-		echo "Starting to run $config_name"
-		echo "Starting to run $config_name" >>$install_log
-		date >>$install_log
-		$config_name >>$install_log
+		mess="Starting to run $config_name"
+		echo "$mess"
+		echo "$mess" >>$install_log
+		"$config_name" >>$install_log
 		echo "Finished" >>$install_log
 		sed "s|$config_name=Y|$config_name=DONE|" $installed_config >this.cfg
 		mv "this.cfg" "$installed_config"
 
 	done < "$installed_config"
-
+mess="Complete script $(date)"
+echo $mess
+echo $mess >>$install_log
 
