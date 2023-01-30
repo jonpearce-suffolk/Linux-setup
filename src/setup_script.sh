@@ -31,9 +31,9 @@ echo "Script running from folder $SCRIPTPATH"
 
 hostnamectl
 echo "This is the current machine name."
-#read -p "Press enter to continue" start
-#read -p "Enter the domain: " domain_name; export domain_name;
-#read -p "Admin password $admin_user" admin_pass; export admin_pass
+read -p "Press enter to continue" start
+read -p "Enter the domain: " domain_name; export domain_name;
+read -p "Admin password $admin_user" admin_pass; export admin_pass
 
 if [ ! -d "$SCRIPTPATH" ]
 	then
