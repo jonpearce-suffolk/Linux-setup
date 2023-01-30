@@ -143,3 +143,7 @@ UUpgrade()
 	echo Has the upgrade worked?
 }
 
+InstallNetTools()
+{
+	apt install net-tools
+}
