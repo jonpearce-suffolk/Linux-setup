@@ -87,6 +87,7 @@ DisAllowRootSsh()
 InstallApache()
 {
 	apt-get install apache2
+	a2enmod ssl
 }
 
 InstallMySqlOnly()
@@ -146,4 +147,14 @@ UUpgrade()
 InstallNetTools()
 {
 	apt install net-tools
+}
+
+InstallPhpImagick()
+{
+	apt install php-imagick
+}
+
+InstallCurl()
+{
+	apt install php-curl
 }
