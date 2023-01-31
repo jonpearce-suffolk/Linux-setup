@@ -114,7 +114,7 @@ FunNewHostName()
 	fi
 }
 
-FunUnixAutoRemove()
+FunAptAutoRemove()
 {
 	apt autoremove
 }
