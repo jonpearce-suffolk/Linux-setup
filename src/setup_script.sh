@@ -58,14 +58,14 @@ echo "================" >>$install_log
 while IFS= read -r file_line
 	do
 		# Ignore blank lines in config
-		if [ -z "$install_log" ]
+		if [ -z "$file_line" ]
 			then
 				continue
 			fi
 		# Ignore and echo comments in config and anything that is not a function
-		if [ ${file_line:0:1} == "#" ] || [ ${file_line:0:3} != 'Fun' ]
+		if [ "${file_line:0:1}" == "#" ] || [ "${file_line:0:3}" != 'Fun' ]
 			then
-				echo ${file_line}
+				echo "${file_line}"
 				continue
 			fi
 

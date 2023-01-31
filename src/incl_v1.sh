@@ -1,7 +1,7 @@
 #!/usr/bin/bash
 echo "Loading scripts"
 
-FunAddAdminUser()
+cdFunAddAdminUser()
 {
 	adduser $admin_user
 	usermod -a -G sudo $admin_user
@@ -110,7 +110,7 @@ FunNewHostName()
 	read -p "Enter new hostname or empty for keeping existing name :" new_host_name
 	if [ "$new_host_name" != "" ]
 	then
-		hostnamectl set-hostname host.example.com
+		hostnamectl set-hostname $new_host_name
 	fi
 }
 
