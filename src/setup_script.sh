@@ -63,7 +63,7 @@ while IFS= read -r file_line
 				continue
 			fi
 		# Ignore and echo comments in config and anything that is not a function
-		if [ ${file_line:0:1} == "#" || ${file_line:0:3} != 'Fun' ]
+		if [ ${file_line:0:1} == "#" ] || [ ${file_line:0:3} != 'Fun' ]
 			then
 				echo ${file_line}
 				continue
