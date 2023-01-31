@@ -1,7 +1,7 @@
 #!/usr/bin/bash
 echo "Loading scripts"
 
-AddAdminUser()
+FunAddAdminUser()
 {
 	adduser $admin_user
 	usermod -a -G sudo $admin_user
@@ -9,13 +9,13 @@ AddAdminUser()
 
 }
 
-AddAdminWWW()
+FunAddAdminWWW()
 {
 	usermod -a -G www-data $admin_user
 }
 
 # Allow firewall open to port 80 and 443 according to https://letsencrypt.org/docs/allow-port-80/
-AddFireWallRules()
+FunAddFireWallRules()
 {
 
 	ufw app list
@@ -27,7 +27,7 @@ AddFireWallRules()
 # This will install a file that will test a file in the /tmp folder and execute a specific root command.
 # Only the configured root commands will work.
 # But it could for example be used for shutdown a test server from a browser link withouth SUDO.
-AddIfFileRunRoot()
+FunAddIfFileRunRoot()
 {
 	echo "adding cronjob"
 	line="*/2 * * * * /usr/bin/bash $SCRIPTPATH/test_run_files.sh >>/tmp/test_run_files.log 2>&1"
@@ -35,68 +35,56 @@ AddIfFileRunRoot()
 	(crontab -u $(whoami) -l; echo "$line" ) | crontab -u $(whoami) -
 }
 
-CreateVirtualHost()
+FunCreateVirtualHost()
 {
-	# This will create a virtual host for a domain.  Put you own standard folder names here.
-	# The non secure site should redirect to the secure (HTTPS) site.
-	# If you are using Let's Encrypt then you need to install Snap and certBot too.
-	config=/etc/apache2/sites-available/${domain_name}.conf; export config;
-	export config
-	echo "<VirtualHost *:80>" >$config
-  echo "  ServerName ${domain_name}" >>$config
-  echo "  Redirect / https://${domain_name}/" >>$config
-	echo "</VirtualHost>" >>$config
+	# This will create a virtual host for a domain.
 
-	#echo "<VirtualHost *:443>" >$config
-	#echo "    ServerName $domain_name" >>$config
-	#echo "    ServerAlias www.$domain_name" >>$config
-	#echo "    ServerAdmin webmaster@localhost" >>$config
-	#echo "    DocumentRoot /var/www/$domain_name" >>$config
-	#echo "    ErrorLog ${APACHE_LOG_DIR}/error.log" >>$config
-	#echo "    CustomLog ${APACHE_LOG_DIR}/access.log combined" >>$config
-	#echo "    <Directory /var/www/$domain_name>" >>$config
-	#echo "      Options FollowSymLinks" >>$config
-	#echo "      AllowOverride All" >>$config
-	#echo "      Require all denied" >>$config
-	#echo "    </Directory>" >>$config
-	#echo "</VirtualHost>" >>$config
-	mkdir /var/www/$domain_name
-	chown -R $admin_user:www-data /var/www/$domain_name
-	chmod 770 /var/www/$domain_name
+	export config
+	echo "<VirtualHost *:80>" >$apache_config
+  echo "  ServerName ${domain_name}" >>$apache_config
+  echo "  Redirect / https://${domain_name}/" >>$apache_config
+	echo "</VirtualHost>" >>$apache_config
+
+	sed  "s|\$domain_name|$domain_name|g" "$SCRIPTPATH/apache_ssl_template.conf" >$apache_ssl_config
+	sed -i "s|\$vhost_root|$vhost_root|" $apache_ssl_config
+	mkdir ${vhost_root}
+	chown -R $admin_user:www-data ${vhost_root}
+	chmod 770 ${vhost_root}
 
 	# vi /etc/apache2/sites-available/${domain_name}.conf
 
 	a2ensite $domain_name
+	a2ensite ${domain_name}_ssl
 	echo "Now reloading apache"
 	systemctl reload apache2
 
 }
 
-DisableDefaultA2Site()
+FunDisableDefaultA2Site()
 {
-	echo "might want to disable default site"
+	echo "disable default site"
 	a2dissite 000-default
 }
 
-DisAllowRootSsh()
+FunDisAllowRootSsh()
 {
 	# using i and suffix as we need a backup.
 	sed -i.BAK "s|PermitRootLogin yes|PermitRootLogin no|" /etc/ssh/sshd_config
 }
 
-InstallApache()
+FunInstallApache()
 {
 	apt-get install apache2
 	a2enmod ssl
 }
 
-InstallMySqlOnly()
+FunInstallMySqlOnly()
 {
 	apt-get install mysql-server
 }
 
 
-InstallMySqlSecure()
+FunInstallMySqlSecure()
 {
 	apt-get install mysql-server
 
@@ -110,14 +98,14 @@ InstallMySqlSecure()
 
 }
 
-InstallPHP()
+FunInstallPHP()
 {
 	apt install php libapache2-mod-php php-mysql
 	php --version
 
 }
 
-NewHost()
+FunNewHostName()
 {
 	read -p "Enter new hostname or empty for keeping existing name :" new_host_name
 	if [ "$new_host_name" != "" ]
@@ -126,35 +114,35 @@ NewHost()
 	fi
 }
 
-UnixAutoRemove()
+FunUnixAutoRemove()
 {
 	apt autoremove
 }
 
-UUpdate()
+FunUUpdate()
 {
 	apt-get update
 	echo Has the update worked?
 	read -p "Press enter to continue"
 }
 
-UUpgrade()
+FunUUpgrade()
 {
 	apt-get upgrade
 	echo Has the upgrade worked?
 }
 
-InstallNetTools()
+FunInstallNetTools()
 {
 	apt install net-tools
 }
 
-InstallPhpImagick()
+FunInstallPhpImagick()
 {
 	apt install php-imagick
 }
 
-InstallCurl()
+FunInstallCurl()
 {
 	apt install php-curl
 }

@@ -50,6 +50,10 @@ if [ ! -f "$installed_config" ]
 		echo "Using existing installed config"
 	fi
 
+# Load the config variables
+source $installed_config
+
+# Now scan down the file and execute each line.
 echo "================" >>$install_log
 while IFS= read -r file_line
 	do
@@ -58,8 +62,8 @@ while IFS= read -r file_line
 			then
 				continue
 			fi
-		# Ignore and echo comments in config
-		if [ ${file_line:0:1} == "#" ]
+		# Ignore and echo comments in config and anything that is not a function
+		if [ ${file_line:0:1} == "#" || $(file_line:0:3 != 'Fun']
 			then
 				echo ${file_line}
 				continue
