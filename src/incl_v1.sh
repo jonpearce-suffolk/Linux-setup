@@ -1,12 +1,18 @@
 #!/usr/bin/bash
 echo "Loading scripts"
 
-cdFunAddAdminUser()
+FunAddAdminUser()
 {
 	adduser $admin_user
 	usermod -a -G sudo $admin_user
 	echo -e "$admin_pass\n$admin_pass" | passwd $admin_user
 
+}
+
+FunAddSudo()
+{
+	read -p "Admin user needing sudo" sudo_user; export sudo_user
+	usermod -a -G sudo $sudo_user
 }
 
 FunAddAdminWWW()
@@ -116,6 +122,7 @@ FunNewHostName()
 
 FunAptAutoRemove()
 {
+	apt update
 	apt autoremove
 }
 
@@ -145,4 +152,24 @@ FunInstallPhpImagick()
 FunInstallCurl()
 {
 	apt install php-curl
+}
+
+FunInstallKey()
+{
+	echo 'This will install your public key into authorized_keys'
+	read -p "Enter Public key :" pub_key; export pub_key
+	echo $pub_key >>.ssh/authorized_keys
+}
+
+FunRootLimitLogin()
+{
+	set sshd_config=/etc/ssh/sshd_config
+	sed -i "s|PermitRootLogin yes|PermitRootLogin prohibit-password|" $sshd_config
+	systemctl reload sshd
+}
+
+FunAptAutoUpgrade()
+{
+	apt update
+	apt upgrade
 }
