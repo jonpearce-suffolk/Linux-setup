@@ -4,7 +4,7 @@ default_config="default.cfg"
 installed_config="installed.cfg"
 install_log="install.log"
 ## Admin user should be set in config.
-if [ -z $admin_user ]; then $admin_user="mp_admin";
+if [ -z $admin_user ]; then $admin_user="mp_admin"; fi;
 SCRIPTPATH="$( cd -- "$(dirname "$0")" >/dev/null 2>&1 ; pwd -P )"
 
 # either parameter 1 is new config or ask.
