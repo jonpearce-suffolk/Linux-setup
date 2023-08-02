@@ -106,7 +106,7 @@ FunInstallMySqlSecure()
 
 FunInstallPHP()
 {
-	apt install php libapache2-mod-php php-mysql
+	apt-get install php libapache2-mod-php php-mysql
 	php --version
 
 }
@@ -122,8 +122,8 @@ FunNewHostName()
 
 FunAptAutoRemove()
 {
-	apt update
-	apt autoremove
+	apt-get update
+	apt-get autoremove
 }
 
 FunUUpdate()
@@ -141,17 +141,17 @@ FunUUpgrade()
 
 FunInstallNetTools()
 {
-	apt install net-tools
+	apt-get install net-tools
 }
 
 FunInstallPhpImagick()
 {
-	apt install php-imagick
+	apt-get install php-imagick
 }
 
 FunInstallCurl()
 {
-	apt install php-curl
+	apt-get install php-curl
 }
 
 FunInstallKey()
@@ -170,8 +170,8 @@ FunRootLimitLogin()
 
 FunAptAutoUpgrade()
 {
-	apt update
-	apt upgrade
+	apt-get update
+	apt-get upgrade
 }
 
 FunAddWeeklyReboot()
