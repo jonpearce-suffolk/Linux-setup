@@ -35,4 +35,8 @@ The example config and utility script contains a setup for Apache, PHP and MySql
 
 You can contribute different utility scripts and config files by contacting me by email.
 
+Clone with
+ git clone https://github.com/jonpearce-suffolk/Linux-setup.git linux_setup
+
+
 Multi-project.co.uk

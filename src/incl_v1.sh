@@ -173,3 +173,12 @@ FunAptAutoUpgrade()
 	apt update
 	apt upgrade
 }
+
+FunAddWeeklyReboot()
+{
+	rem "/usr/sbin/shutdown -r now"
+	echo "adding cronjob must be run as root"
+	line="30 3  *    *    Tue /sbin/shutdown -r now >/tmp/reboot.log 2>&1"
+	echo "$line"
+	(crontab -u $(whoami) -l; echo "$line" ) | crontab -u $(whoami) -
+}
