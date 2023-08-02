@@ -3,7 +3,8 @@ echo "This must be run as root - after running further scripts can be run from a
 default_config="default.cfg"
 installed_config="installed.cfg"
 install_log="install.log"
-admin_user="mp_admin"; export admin_user;
+## Admin user should be set in config.
+if [ -z $admin_user ]; then $admin_user="mp_admin";
 SCRIPTPATH="$( cd -- "$(dirname "$0")" >/dev/null 2>&1 ; pwd -P )"
 
 # either parameter 1 is new config or ask.

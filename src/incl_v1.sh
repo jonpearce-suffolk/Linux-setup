@@ -26,7 +26,9 @@ FunAddFireWallRules()
 
 	ufw app list
 
-	ufw allow in "Apache" "ssh"
+	ufw allow Apache
+	ufw allow ssh
+
 	ufw app list
 }
 
@@ -56,6 +58,7 @@ FunCreateVirtualHost()
 	mkdir ${vhost_root}
 	chown -R $admin_user:www-data ${vhost_root}
 	chmod 770 ${vhost_root}
+	echo "<?php echo 'this is working';" > ${vhost_root}/index.php
 
 	# vi /etc/apache2/sites-available/${domain_name}.conf
 
@@ -80,19 +83,19 @@ FunDisAllowRootSsh()
 
 FunInstallApache()
 {
-	apt-get install apache2
+	apt-get -y install apache2
 	a2enmod ssl
 }
 
 FunInstallMySqlOnly()
 {
-	apt-get install mysql-server
+	apt-get -y install mysql-server
 }
 
 
 FunInstallMySqlSecure()
 {
-	apt-get install mysql-server
+	apt-get -y install mysql-server
 
 	# Make admin password same as unix admin password, add another question if different password required.
 	# dash removes whitespace in front of lines placed there to make it easier to read.
@@ -106,7 +109,7 @@ FunInstallMySqlSecure()
 
 FunInstallPHP()
 {
-	apt-get install php libapache2-mod-php php-mysql
+	apt-get -y install php libapache2-mod-php php-mysql
 	php --version
 
 }
@@ -122,36 +125,36 @@ FunNewHostName()
 
 FunAptAutoRemove()
 {
-	apt-get update
-	apt-get autoremove
+	apt-get -y update
+	apt-get -y autoremove
 }
 
 FunUUpdate()
 {
-	apt-get update
+	apt-get -y update
 	echo Has the update worked?
 	read -p "Press enter to continue"
 }
 
 FunUUpgrade()
 {
-	apt-get upgrade
+	apt-get -y upgrade
 	echo Has the upgrade worked?
 }
 
 FunInstallNetTools()
 {
-	apt-get install net-tools
+	apt-get -y install net-tools
 }
 
 FunInstallPhpImagick()
 {
-	apt-get install php-imagick
+	apt-get -y install php-imagick
 }
 
 FunInstallCurl()
 {
-	apt-get install php-curl
+	apt-get -y install php-curl
 }
 
 FunInstallKey()
@@ -170,8 +173,8 @@ FunRootLimitLogin()
 
 FunAptAutoUpgrade()
 {
-	apt-get update
-	apt-get upgrade
+	apt-get -y update
+	apt-get -y upgrade
 }
 
 FunAddWeeklyReboot()
@@ -181,4 +184,9 @@ FunAddWeeklyReboot()
 	line="30 3  *    *    Tue /sbin/shutdown -r now >/tmp/reboot.log 2>&1"
 	echo "$line"
 	(crontab -u $(whoami) -l; echo "$line" ) | crontab -u $(whoami) -
+}
+
+FunAddAdminGroupApache()
+{
+	usermod -a -G sudo www-data
 }
