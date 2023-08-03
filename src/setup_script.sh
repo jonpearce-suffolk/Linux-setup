@@ -3,8 +3,6 @@ echo "This must be run as root - after running further scripts can be run from a
 default_config="default.cfg"
 installed_config="installed.cfg"
 install_log="install.log"
-## Admin user should be set in config.
-if [ -z $admin_user ]; then $admin_user="mp_admin"; fi;
 SCRIPTPATH="$( cd -- "$(dirname "$0")" >/dev/null 2>&1 ; pwd -P )"
 
 # either parameter 1 is new config or ask.
@@ -53,6 +51,9 @@ if [ ! -f "$installed_config" ]
 
 # Load the config variables
 source $installed_config
+
+## Admin user should be set in config.
+if [ -z ${admin_user+x} ]; then read -p "Enter new login name for administrator" admin_user; export admin_user; fi;
 
 # Now scan down the file and execute each line.
 echo "================" >>$install_log
