@@ -1,6 +1,8 @@
 #!/usr/bin/bash
 echo "This must be run as root - after running further scripts can be run from admin user."
 default_config="default.cfg"
+RED='\033[0;31m'
+NC='\033[0m' # No Color
 installed_config="installed.cfg"
 install_log="install.log"
 SCRIPTPATH="$( cd -- "$(dirname "$0")" >/dev/null 2>&1 ; pwd -P )"
@@ -30,6 +32,10 @@ echo "Script running from folder $SCRIPTPATH"
 
 hostnamectl
 echo "This is the current machine name."
+OS_NAME=$(grep -E '^NAME=' /etc/os-release | sed -e "s/NAME=//" -e "s/\"//g" -e "s/\//_/g" -e "s/ /_/g" | tr '[:upper:]' '[:lower:]'); export OS_NAME;
+OS_VERSION=$(grep -E '^VERSION=' /etc/os-release | sed -e "s/VERSION=//" -e "s/\"//g"); export OS_VERSION
+echo "OS_NAME=$OS_NAME"
+echo "OS_VERSION=$OS_VERSION"
 read -p "Press enter to continue" start
 read -p "Enter the domain: " domain_name; export domain_name;
 read -p "Admin password $admin_user" admin_pass; export admin_pass
@@ -38,8 +44,6 @@ if [ ! -d "$SCRIPTPATH" ]
 	then
 	SCRIPTPATH="$PWD"
 fi
-source "$SCRIPTPATH/incl_v1.sh"
-echo "loading library $SCRIPTPATH/incl_v1.sh"
 
 if [ ! -f "$installed_config" ]
 	then
@@ -52,6 +56,14 @@ if [ ! -f "$installed_config" ]
 # Load the config variables
 source $installed_config
 
+# This allows for config to do OS specific files.
+echo "loading library $SCRIPTPATH/${OS_NAME}_incl_v1.sh"
+source "$SCRIPTPATH/${OS_NAME}_incl_v1.sh"
+if [ $? -eq 0 ]; then
+	echo "Script loaded successfully"
+else
+	echo -e "${RED}Script did not load${NC}"; exit;
+fi
 ## Admin user should be set in config.
 if [ -z ${admin_user+x} ]; then read -p "Enter new login name for administrator" admin_user; export admin_user; fi;
 
