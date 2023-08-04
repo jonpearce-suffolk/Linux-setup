@@ -53,8 +53,6 @@ FunCreateVirtualHost()
   echo "  Redirect / https://${domain_name}/" >>$apache_config
 	echo "</VirtualHost>" >>$apache_config
 
-	sed  "s|\$domain_name|$domain_name|g" "$SCRIPTPATH/apache_ssl_template.conf" >$apache_ssl_config
-	sed -i "s|\$vhost_root|$vhost_root|" $apache_ssl_config
 	mkdir ${vhost_root}
 	chown -R $admin_user:www-data ${vhost_root}
 	chmod 770 ${vhost_root}
@@ -68,6 +66,29 @@ FunCreateVirtualHost()
 	systemctl reload apache2
 
 }
+
+FunAppacheSignedSelf()
+{
+	sed  "s|\$domain_name|$domain_name|g" "$SCRIPTPATH/apache_self_ssl_template.conf" >$apache_ssl_config
+	sed -i "s|\$vhost_root|$vhost_root|" $apache_ssl_config
+		# Self signed certificate is the default for now
+	sudo openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout /etc/ssl/private/apache-selfsigned.key -out /etc/ssl/certs/apache-selfsigned.crt
+}
+
+FunAppacheSignedLets()
+{
+	sed  "s|\$domain_name|$domain_name|g" "$SCRIPTPATH/apache_lets_ssl_template.conf" >$apache_ssl_config
+	sed -i "s|\$vhost_root|$vhost_root|" $apache_ssl_config
+	echo "under construnction"
+}
+
+FunAppacheSignedFullCert()
+{
+	sed  "s|\$domain_name|$domain_name|g" "$SCRIPTPATH/apache_ssl_template.conf" >$apache_ssl_config
+	sed -i "s|\$vhost_root|$vhost_root|" $apache_ssl_config
+	echo "under construnction"
+}
+
 
 FunDisableDefaultA2Site()
 {
