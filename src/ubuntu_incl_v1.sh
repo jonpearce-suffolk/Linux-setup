@@ -25,8 +25,9 @@ FunAddFireWallRules()
 {
 
 	ufw app list
+	ufw enable
 
-	ufw allow Apache
+	ufw allow 'Apache Full'
 	ufw allow ssh
 
 	ufw app list
@@ -128,6 +129,28 @@ FunInstallMySqlSecure()
 
 }
 
+FunInstallMySqlUnixAuth()
+{
+	apt-get -y install mysql-server
+
+	# Make root password no necessary if accessed from root command line.
+	# dash removes whitespace in front of lines placed there to make it easier to read.
+	mysql -uroot <<-END1
+		ALTER USER 'root'@'localhost' IDENTIFIED WITH auth_socket;
+		END1
+
+	mysql_secure_installation
+
+}
+
+FunRestartMysqlNoGrant()
+{
+	# Centos will be mysqld
+	# Debian will be mysql
+	service mysql stop
+	mysqld_safe --skip-grant-tables &
+}
+
 FunInstallPHP()
 {
 	apt-get -y install php libapache2-mod-php php-mysql
@@ -210,4 +233,15 @@ FunAddWeeklyReboot()
 FunAddAdminGroupApache()
 {
 	usermod -a -G sudo www-data
+}
+
+FunInstallSamba()
+{
+	# Not sure I would do this for a production server
+	apt update
+	apt install samba
+	ufw allow samba
+
+	echo "enter password for samba user $admin_user"
+	smbpasswd -a $admin_user
 }
