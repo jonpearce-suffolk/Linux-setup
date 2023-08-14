@@ -11,5 +11,6 @@ then
 		# code if not found perhaps notify administrator
 		echo "not a valid secret"
 	fi
+	rm "$shutdown_sig"
 
 fi
