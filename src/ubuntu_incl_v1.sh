@@ -107,6 +107,7 @@ FunInstallApache()
 {
 	apt-get -y install apache2
 	a2enmod ssl
+	a2enmod rewrite
 }
 
 FunInstallMySqlOnly()

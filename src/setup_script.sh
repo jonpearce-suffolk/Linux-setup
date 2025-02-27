@@ -65,7 +65,7 @@ else
 	echo -e "${RED}Script did not load${NC}"; exit;
 fi
 ## Admin user should be set in config.
-if [ -z ${admin_user+x} ]; then read -p "Enter new login name for administrator" admin_user; export admin_user; fi;
+if [ -z ${admin_user+x} ]; then read -p "Enter new login name for administrator: " admin_user; export admin_user; fi;
 
 # Now scan down the file and execute each line.
 echo "================" >>$install_log
